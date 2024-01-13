@@ -17,7 +17,7 @@ namespace FonTech.DAL.DependencyInjection
     {
         public static void AddDataAccessLayer(this IServiceCollection services, IConfiguration configuration)
         {
-            var connectionString = configuration.GetConnectionString("DefaultConnection");
+            var connectionString = configuration.GetConnectionString("MSSQL");
 
             services.AddSingleton<DateInterceptor>();
             services.AddDbContext<ApplicationDbContext>(options =>
