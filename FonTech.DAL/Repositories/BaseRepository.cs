@@ -18,17 +18,17 @@ namespace FonTech.DAL.Repositories
         }
 
 
-        public async Task<TEntuty> CreateAsync(TEntuty entity)
+        public  Task<TEntuty> CreateAsync(TEntuty entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entuty is null");
             }
 
-         await   _dbContext.AddAsync(entity);
+         _dbContext.Add(entity);
          _dbContext.SaveChanges();
 
-            return entity;
+            return Task.FromResult(entity);
         }
 
         public IQueryable<TEntuty> GetAll()
