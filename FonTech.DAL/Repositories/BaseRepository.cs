@@ -18,17 +18,17 @@ namespace FonTech.DAL.Repositories
         }
 
 
-        public Task<TEntuty> CreateAsync(TEntuty entity)
+        public async Task<TEntuty> CreateAsync(TEntuty entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entuty is null");
             }
 
-            _dbContext.Add(entity);
-            _dbContext.SaveChanges();
+         await   _dbContext.AddAsync(entity);
+         _dbContext.SaveChanges();
 
-            return Task.FromResult(entity);
+            return entity;
         }
 
         public IQueryable<TEntuty> GetAll()
@@ -36,7 +36,7 @@ namespace FonTech.DAL.Repositories
             return _dbContext.Set<TEntuty>();
         }
 
-        public Task<TEntuty> RemoveAsync(TEntuty entity)
+        public  Task<TEntuty> RemoveAsync(TEntuty entity)
         {
             if (entity == null)
             {
@@ -49,15 +49,15 @@ namespace FonTech.DAL.Repositories
             return Task.FromResult(entity);
         }
 
-        public Task<TEntuty> UpdateAsync(TEntuty entity)
+        public  Task<TEntuty> UpdateAsync(TEntuty entity)
         {
             if (entity == null)
             {
                 throw new ArgumentNullException("Entuty is null");
             }
 
-            _dbContext.Update(entity);
-            _dbContext.SaveChanges();
+           _dbContext.Update(entity);
+           _dbContext.SaveChanges();
 
             return Task.FromResult(entity);
         }

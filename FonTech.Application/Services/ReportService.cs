@@ -83,6 +83,18 @@ namespace FonTech.Application.Services
         {
             try
             {
+                //await _reportRepository.CreateAsync(new Report()
+                //{
+
+                //    UserId = 1,
+                //    Name = "ASAAA",
+                //    Description = "Uytre bhf ddd",
+                //    CreatedAt = DateTime.UtcNow,
+                //    CreatedBy = 1,
+                //    UpdatedAt = DateTime.UtcNow,
+                //    UpdatedBy = 1,
+                //});
+
                 Report? report = await _reportRepository.GetAll().FirstOrDefaultAsync(x => x.Id == id);
                 BaseResult? result = _reportValidator.ValidateOnNull(report);
 

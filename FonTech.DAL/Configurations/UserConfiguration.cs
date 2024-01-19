@@ -21,7 +21,24 @@ namespace FonTech.DAL.Configurations
                 .HasForeignKey(x => x.UserId)
                 .HasPrincipalKey(x => x.Id);
 
+            builder.HasData(new List<User>()
+            {
+               new User()
+               {
+                 Id = 1,
+                 Login = "WindTalkers",
+                 Password = new string('+',7),
+                 CreatedAt = DateTime.UtcNow,
 
+               },
+               new User() 
+               {
+                Id = 2,
+                Login = "WindTalkers2",
+                Password = new string('-',8),
+                CreatedAt = DateTime.UtcNow,
+               }
+            }) ;
         }
     }
 }

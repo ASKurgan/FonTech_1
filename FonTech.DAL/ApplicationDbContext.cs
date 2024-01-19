@@ -14,17 +14,21 @@ namespace FonTech.DAL
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
-            try 
-            { 
-                Database.EnsureCreated(); 
-            } 
-            
-            catch 
-                (Exception ex) 
-            {
-                Console.WriteLine(ex);
-            }
-            
+            Database.EnsureDeleted();
+            Database.EnsureCreated();
+
+            //try 
+            //{ 
+
+            //    Database.EnsureCreated(); 
+            //} 
+
+            //catch 
+            //    (Exception ex) 
+            //{
+            //    Console.WriteLine(ex);
+            //}
+
 
         }
 
