@@ -31,7 +31,7 @@ if (app.Environment.IsDevelopment())
     {
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "FonTech Swagger v1.0");
         c.SwaggerEndpoint("/swagger/v2/swagger.json", "FonTech Swagger v2.0");
-        c.RoutePrefix = string.Empty;
+       // c.RoutePrefix = string.Empty;
     });
 }
 

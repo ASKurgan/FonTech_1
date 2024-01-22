@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using System.Reflection;
 
 namespace FonTech.Api
 {
@@ -73,6 +74,9 @@ namespace FonTech.Api
                        Array.Empty<string>()
                     }
                 });
+
+                string? xmlFileName = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFileName));
             });
         }
     }
