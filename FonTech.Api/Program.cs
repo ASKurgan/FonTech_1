@@ -4,11 +4,16 @@ using Serilog;
 using FonTech.DAL;
 using Microsoft.EntityFrameworkCore;
 using FonTech.Api;
+using FonTech.Domain.Settings;
+using Microsoft.Extensions.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.DefaultSection));
 
 // builder.Services.AddSingleton(new ServiceCollection());
 builder.Services.AddControllers();
 
+builder.Services.AddAuthenticationAndAuthorization(builder);
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

@@ -13,6 +13,9 @@ namespace FonTech.Domain.Enum
         ReportAllreadyExists = 2,
 
         UserNotFound = 11,
+        UserAllreadyExists = 12,
+
+        PasswordNotEqualsPasswordConfirm = 21,
 
         InternalServerError = 10,
 

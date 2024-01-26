@@ -121,6 +121,10 @@
     <value>Внутренняя ошибка сервера</value>
     <comment>Internal server error</comment>
   </data>
+  <data name="PasswordNotEqualsPasswordConfirm" xml:space="preserve">
+    <value>Пароли не совпадают</value>
+    <comment>Password not equals password confirm</comment>
+  </data>
   <data name="ReportAllreadyExists" xml:space="preserve">
     <value>Отчёт с таким названием уже есть</value>
     <comment>Report allready exists</comment>
@@ -132,6 +136,10 @@
   <data name="ReportsNotFound" xml:space="preserve">
     <value>Отчёты не найдены</value>
     <comment>Reports not found</comment>
+  </data>
+  <data name="UserAllreadyExists" xml:space="preserve">
+    <value>Пользователь с такими данными уже существует</value>
+    <comment>User allready exists</comment>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>

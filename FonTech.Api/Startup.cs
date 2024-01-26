@@ -1,10 +1,50 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using FonTech.Domain.Settings;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Reflection;
+using System.Text;
 
 namespace FonTech.Api
 {
     public static class Startup
     {
+        /// <summary>
+        /// Подключение аутентификации и авторизации
+        /// </summary>
+        /// <param name="services""builder" ></param>
+        public static void AddAuthenticationAndAuthorization(this IServiceCollection services, WebApplicationBuilder builder) 
+        {
+            services.AddAuthorization();
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(o =>
+            {
+                JwtSettings? options = builder.Configuration.GetSection(JwtSettings.DefaultSection).Get<JwtSettings>();
+                string? jwtKey = options.JwtKey;
+                string? issuer = options.Issuer;
+                string? audience = options.Audience;
+               // int lifeTime = options.Lifetime;
+               // int refreshTokenValidityInDays = options.RefreshTokenValidityInDays;
+                o.Authority = options.Authority;
+                o.RequireHttpsMetadata = false;
+                o.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidIssuer = issuer,
+                    ValidAudience = audience,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true
+                };
+            });
+        }
+
         /// <summary>
         /// Подключение Swagger
         /// </summary>

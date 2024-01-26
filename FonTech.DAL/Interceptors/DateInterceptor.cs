@@ -12,13 +12,13 @@ namespace FonTech.DAL.Interceptors
     public class DateInterceptor : SaveChangesInterceptor
     {
 
-       //public override ValueTask<int> SavedChangesAsync(SaveChangesCompletedEventData eventData, int result,
+       //public override ValueTask<int> SavingChangesAsync(SaveChangesCompletedEventData eventData, int result,
        //                               CancellationToken cancellationToken = new CancellationToken())
        // {
        //     var dbContext = eventData.Context;
        //     if (dbContext == null)
        //     {
-       //         return base.SavedChangesAsync(eventData, result);
+       //         return base.SavingChangesAsync(eventData, result);
        //     }
 
        //     var entries = dbContext.ChangeTracker.Entries<IAuditable>();
@@ -35,7 +35,7 @@ namespace FonTech.DAL.Interceptors
        //             entry.Property(x => x.UpdatedAt).CurrentValue = DateTime.UtcNow;
        //         }
        //     }
-       //     return base.SavedChangesAsync(eventData, result, cancellationToken);
+       //     return base.SavingChangesAsync(eventData, result, cancellationToken);
        // }
         public override InterceptionResult<int> SavingChanges(DbContextEventData eventData, InterceptionResult<int> result)
         {
