@@ -121,6 +121,10 @@
     <value>Внутренняя ошибка сервера</value>
     <comment>Internal server error</comment>
   </data>
+  <data name="PasswordIsWrong" xml:space="preserve">
+    <value>Неверный пароль</value>
+    <comment>Password is wrong</comment>
+  </data>
   <data name="PasswordNotEqualsPasswordConfirm" xml:space="preserve">
     <value>Пароли не совпадают</value>
     <comment>Password not equals password confirm</comment>
