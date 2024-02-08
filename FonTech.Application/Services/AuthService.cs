@@ -70,7 +70,7 @@ namespace FonTech.Application.Services
                     new Claim(ClaimTypes.Name,user.Login),
                     new Claim(ClaimTypes.Role, "User")
                 };
-                var accesToken = _tokenService.GenerateAccessToken(claims);
+                string? accesToken = _tokenService.GenerateAccessToken(claims);
                 string? refreshToken = _tokenService.GenerateRefreshToken();
                 
                 if (userToken == null)
@@ -87,6 +87,8 @@ namespace FonTech.Application.Services
                 {
                     userToken.RefreshToken = refreshToken;
                     userToken.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+                    await _userTokenRepository.UpdateAsync(userToken);
                 }
 
                 return new BaseResult<TokenDto>()
@@ -160,8 +162,8 @@ namespace FonTech.Application.Services
 
         private string HashPassword(string password)
         {
-            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password)); 
-            return BitConverter.ToString(bytes).ToLower();
+            byte[]? bytes = SHA256.HashData(Encoding.UTF8.GetBytes(password)); 
+            return Convert.ToBase64String(bytes);
         }
 
         private bool IsVerifyPassword(string userPasswordHash, string userPassword)
