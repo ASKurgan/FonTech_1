@@ -14,7 +14,9 @@ namespace FonTech.Domain.Enum
 
         UserNotFound = 11,
         UserAllreadyExists = 12,
-        
+        UserUnauthorizedAccess = 13,
+
+
 
         PasswordNotEqualsPasswordConfirm = 21,
         PasswordIsWrong = 22,

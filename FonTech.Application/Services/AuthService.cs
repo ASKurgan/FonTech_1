@@ -114,6 +114,7 @@ namespace FonTech.Application.Services
 
         public async Task<BaseResult<UserDto>> Register(RegisterUserDto dto)
         {
+            throw new UnauthorizedAccessException("UnauthorizedAccessException");
             if (dto.Password != dto.PasswordConfirm)
             {
                 return new BaseResult<UserDto>()
@@ -123,40 +124,40 @@ namespace FonTech.Application.Services
                 };
             }
 
-            try 
-            {
-                User? user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Login == dto.Login);
-                if (user != null) 
-                {
-                    return new BaseResult<UserDto>()
-                    {
-                      ErrorMessage= ErrorMessage.UserAllreadyExists,
-                      ErrorCode =(int)ErrorCodes.UserAllreadyExists,
-                    };
-                }
+            //try 
+            //{
+            //    User? user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Login == dto.Login);
+            //    if (user != null) 
+            //    {
+            //        return new BaseResult<UserDto>()
+            //        {
+            //          ErrorMessage= ErrorMessage.UserAllreadyExists,
+            //          ErrorCode =(int)ErrorCodes.UserAllreadyExists,
+            //        };
+            //    }
 
-                string? hashUserPassword = HashPassword(dto.Password);
-                user = new User()
-                {
-                  Login = dto.Login,
-                  Password = hashUserPassword
-                };
+            //    string? hashUserPassword = HashPassword(dto.Password);
+            //    user = new User()
+            //    {
+            //      Login = dto.Login,
+            //      Password = hashUserPassword
+            //    };
 
-                await _userRepository.CreateAsync(user);
-                return new BaseResult<UserDto>()
-                {
-                    Data = _mapper.Map<UserDto>(user)
-                };
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
-                return new BaseResult<UserDto>()
-                {
-                    ErrorMessage = ErrorMessage.InternalServerError,
-                    ErrorCode = (int)ErrorCodes.InternalServerError,
-                };
-            }
+            //    await _userRepository.CreateAsync(user);
+            //    return new BaseResult<UserDto>()
+            //    {
+            //        Data = _mapper.Map<UserDto>(user)
+            //    };
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.Error(ex, ex.Message);
+            //    return new BaseResult<UserDto>()
+            //    {
+            //        ErrorMessage = ErrorMessage.InternalServerError,
+            //        ErrorCode = (int)ErrorCodes.InternalServerError,
+            //    };
+            //}
 
         }
 

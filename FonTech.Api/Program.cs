@@ -6,6 +6,8 @@ using Microsoft.EntityFrameworkCore;
 using FonTech.Api;
 using FonTech.Domain.Settings;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Diagnostics;
+using FonTech.Api.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.DefaultSection));
@@ -28,6 +30,8 @@ builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddApplication();
 var app = builder.Build();
 
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -39,6 +43,8 @@ if (app.Environment.IsDevelopment())
        // c.RoutePrefix = string.Empty;
     });
 }
+
+app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
 app.UseHttpsRedirection();
 
