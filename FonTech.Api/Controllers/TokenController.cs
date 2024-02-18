@@ -11,7 +11,7 @@ namespace FonTech.Api.Controllers
     /// </summary>
     /// 
     [ApiController]
-    public class TokenController : Controller
+    public class TokenController : ControllerBase
     {
         private readonly ITokenService _tokenService;
 

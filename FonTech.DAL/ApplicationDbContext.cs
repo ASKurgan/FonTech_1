@@ -14,21 +14,8 @@ namespace FonTech.DAL
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
+           // Database.EnsureDeleted();
             Database.EnsureCreated();
-
-            //try 
-            //{ 
-
-            //    Database.EnsureCreated(); 
-            //} 
-
-            //catch 
-            //    (Exception ex) 
-            //{
-            //    Console.WriteLine(ex);
-            //}
-
-
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

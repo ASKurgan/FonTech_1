@@ -32,6 +32,7 @@ namespace FonTech.Application.DependencyInjection
             services.AddScoped<IValidator<UpDateReportDto>, UpdateReportValidator>();
 
             services.AddScoped<IReportService, ReportService>();
+            services.AddScoped<IRoleService, RoleService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ITokenService, TokenService>();
 

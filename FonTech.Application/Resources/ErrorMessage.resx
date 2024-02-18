@@ -149,9 +149,21 @@
     <value>Отчёты не найдены</value>
     <comment>Reports not found</comment>
   </data>
+  <data name="RoleAlreadyExists" xml:space="preserve">
+    <value>Роль уже существует</value>
+    <comment>Role already exists</comment>
+  </data>
+  <data name="RoleNotFound" xml:space="preserve">
+    <value>Роль не найдена</value>
+    <comment>Role not found</comment>
+  </data>
   <data name="UserAllreadyExists" xml:space="preserve">
     <value>Пользователь с такими данными уже существует</value>
     <comment>User allready exists</comment>
+  </data>
+  <data name="UserAllreadyExistsThisRole" xml:space="preserve">
+    <value>Пользователь с этой ролью уже существует</value>
+    <comment>User allready exists this role</comment>
   </data>
   <data name="UserNotFound" xml:space="preserve">
     <value>Пользователь не найден</value>

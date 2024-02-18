@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FonTech.DAL.Repositories
 {
-    public class BaseRepository<TEntuty> : IBaseRepository<TEntuty> where TEntuty : class
+    public class BaseRepository<TEntity> : IBaseRepository<TEntity> where TEntity : class
     {
 
         private readonly ApplicationDbContext _dbContext;
@@ -18,11 +18,11 @@ namespace FonTech.DAL.Repositories
         }
 
 
-        public async Task<TEntuty> CreateAsync(TEntuty entity)
+        public async Task<TEntity> CreateAsync(TEntity entity)
         {
             if (entity == null)
             {
-                throw new ArgumentNullException("Entuty is null");
+                throw new ArgumentNullException("Entity is null");
             }
 
          await _dbContext.AddAsync(entity);
@@ -31,16 +31,16 @@ namespace FonTech.DAL.Repositories
             return entity;
         }
 
-        public IQueryable<TEntuty> GetAll()
+        public IQueryable<TEntity> GetAll()
         {
-            return _dbContext.Set<TEntuty>();
+            return _dbContext.Set<TEntity>();
         }
 
-        public async Task<TEntuty> RemoveAsync(TEntuty entity)
+        public async Task<TEntity> RemoveAsync(TEntity entity)
         {
             if (entity == null)
             {
-                throw new ArgumentNullException("Entuty is null");
+                throw new ArgumentNullException("Entity is null");
             }
 
             _dbContext.Remove(entity);
@@ -49,11 +49,11 @@ namespace FonTech.DAL.Repositories
             return entity;
         }
 
-        public async Task<TEntuty> UpdateAsync(TEntuty entity)
+        public async Task<TEntity> UpdateAsync(TEntity entity)
         {
             if (entity == null)
             {
-                throw new ArgumentNullException("Entuty is null");
+                throw new ArgumentNullException("Entity is null");
             }
 
            _dbContext.Update(entity);
