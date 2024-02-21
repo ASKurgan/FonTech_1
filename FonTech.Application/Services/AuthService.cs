@@ -19,11 +19,13 @@ using System.Runtime.Intrinsics.Arm;
 using System.Security.Cryptography;
 using AutoMapper;
 using System.Security.Claims;
+using FonTech.Domain.Interfaces.Databases;
 
 namespace FonTech.Application.Services
 {
     public class AuthService : IAuthService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IBaseRepository<User> _userRepository;
         private readonly IBaseRepository<UserToken> _userTokenRepository;
         private readonly IBaseRepository<Role> _roleRepository;
@@ -33,7 +35,8 @@ namespace FonTech.Application.Services
         private readonly IMapper _mapper;
         public AuthService(IBaseRepository<User> userRepository, Serilog.ILogger logger, 
             IBaseRepository<UserToken> userTokenRepository, IMapper mapper, ITokenService tokenService,
-            IBaseRepository<Role> roleRepository, IBaseRepository<UserRole> userRoleRepository)
+            IBaseRepository<Role> roleRepository, IBaseRepository<UserRole> userRoleRepository, 
+            IUnitOfWork unitOfWork)
         {
             _userRepository = userRepository;
             _logger = logger;
@@ -42,12 +45,12 @@ namespace FonTech.Application.Services
             _tokenService = tokenService;
             _roleRepository = roleRepository;
             _userRoleRepository = userRoleRepository;
+            _unitOfWork = unitOfWork;
         }
 
         public async Task<BaseResult<TokenDto>> Login(LoginUserDto dto)
         {
-           try 
-            {
+           
                 var user = await _userRepository.GetAll()
                     .Include(x => x.Roles)
                     .FirstOrDefaultAsync(x => x.Login == dto.Login);
@@ -88,13 +91,17 @@ namespace FonTech.Application.Services
                         RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7),
                     };
                     await _userTokenRepository.CreateAsync(userToken);
+
+                    await _userTokenRepository.SaveChangesAsync();
                 }
                 else 
                 {
                     userToken.RefreshToken = refreshToken;
                     userToken.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
 
-                    await _userTokenRepository.UpdateAsync(userToken);
+                     _userTokenRepository.Update(userToken);
+
+                    await _userTokenRepository.SaveChangesAsync();
                 }
 
                 return new BaseResult<TokenDto>()
@@ -105,16 +112,8 @@ namespace FonTech.Application.Services
                       AccesToken = accesToken
                     }
                 };
-            }
-           catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
-                return new BaseResult<TokenDto>()
-                {
-                    ErrorMessage = ErrorMessage.InternalServerError,
-                    ErrorCode = (int)ErrorCodes.InternalServerError,
-                };
-            }
+            
+         
             
         }
 
@@ -130,8 +129,7 @@ namespace FonTech.Application.Services
                 };
             }
 
-            try
-            {
+           
                 User? user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Login == dto.Login);
                 if (user != null)
                 {
@@ -143,46 +141,55 @@ namespace FonTech.Application.Services
                 }
 
                 string? hashUserPassword = HashPassword(dto.Password);
-                user = new User()
-                {
-                    Login = dto.Login,
-                    Password = hashUserPassword
-                };
 
-                await _userRepository.CreateAsync(user);
-
-                var role = await _roleRepository.GetAll().FirstOrDefaultAsync(x => x.Name == "Admin");
-                if (role == null)
+                using (var transaction = await _unitOfWork.BeginTransactionAsync()) 
                 {
-                    return new BaseResult<UserDto>()
+                    try
                     {
-                        ErrorCode = (int)ErrorCodes.RoleNotFound,
-                        ErrorMessage = ErrorMessage.RoleNotFound
-                    };
+                        user = new User()
+                        {
+                            Login = dto.Login,
+                            Password = hashUserPassword
+                        };
+                        
+                        await _unitOfWork.Users.CreateAsync(user);
+
+                        await  _unitOfWork.SaveChangesAsync();  
+
+                        var role = await _roleRepository.GetAll().FirstOrDefaultAsync(x => x.Name == nameof(Roles.User));
+                        if (role == null)
+                        {
+                            return new BaseResult<UserDto>()
+                            {
+                                ErrorCode = (int)ErrorCodes.RoleNotFound,
+                                ErrorMessage = ErrorMessage.RoleNotFound
+                            };
+                        }
+
+                        var userRole = new UserRole()
+                        {
+                            UserId = user.Id,
+                            RoleId = role.Id
+                        };
+
+                        await _unitOfWork.UserRoles.CreateAsync(userRole);
+
+                        await _unitOfWork.SaveChangesAsync();
+
+                        await transaction.CommitAsync();
+                    }
+                    catch (Exception) 
+                    {
+                       await transaction.RollbackAsync();
+                    }
                 }
 
-                var userRole = new UserRole()
-                {
-                    UserId = user.Id,
-                    RoleId = role.Id
-                };
-
-                await _userRoleRepository.CreateAsync(userRole);
-
+    
                 return new BaseResult<UserDto>()
                 {
                     Data = _mapper.Map<UserDto>(user)
                 };
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
-                return new BaseResult<UserDto>()
-                {
-                    ErrorMessage = ErrorMessage.InternalServerError,
-                    ErrorCode = (int)ErrorCodes.InternalServerError,
-                };
-            }
+        
 
         }
 

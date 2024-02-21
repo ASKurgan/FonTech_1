@@ -26,9 +26,8 @@ namespace FonTech.DAL.Repositories
             }
 
          await _dbContext.AddAsync(entity);
-         await _dbContext.SaveChangesAsync();
-
-            return entity;
+         
+         return entity;
         }
 
         public IQueryable<TEntity> GetAll()
@@ -36,7 +35,7 @@ namespace FonTech.DAL.Repositories
             return _dbContext.Set<TEntity>();
         }
 
-        public async Task<TEntity> RemoveAsync(TEntity entity)
+        public  void Remove(TEntity entity)
         {
             if (entity == null)
             {
@@ -44,12 +43,15 @@ namespace FonTech.DAL.Repositories
             }
 
             _dbContext.Remove(entity);
-            await _dbContext.SaveChangesAsync();
-
-            return entity;
+            
         }
 
-        public async Task<TEntity> UpdateAsync(TEntity entity)
+        public async Task<int> SaveChangesAsync()
+        {
+           return await _dbContext.SaveChangesAsync();
+        }
+
+        public TEntity Update(TEntity entity)
         {
             if (entity == null)
             {
@@ -57,8 +59,7 @@ namespace FonTech.DAL.Repositories
             }
 
            _dbContext.Update(entity);
-           await _dbContext.SaveChangesAsync();
-
+           
             return entity;
         }
     }

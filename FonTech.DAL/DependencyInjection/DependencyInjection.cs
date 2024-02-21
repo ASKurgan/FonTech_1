@@ -1,6 +1,7 @@
 ﻿using FonTech.DAL.Interceptors;
 using FonTech.DAL.Repositories;
 using FonTech.Domain.Entity;
+using FonTech.Domain.Interfaces.Databases;
 using FonTech.Domain.Interfaces.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -29,6 +30,7 @@ namespace FonTech.DAL.DependencyInjection
 
         private static void InitRepositories(this IServiceCollection services)
         {
+            services.AddScoped<IUnitOfWork,UnitOfWork>();
             services.AddScoped<IBaseRepository<User>, BaseRepository<User>>();
             services.AddScoped<IBaseRepository<Role>, BaseRepository<Role>>();
             services.AddScoped<IBaseRepository<UserRole>, BaseRepository<UserRole>>();

@@ -39,8 +39,7 @@ namespace FonTech.Application.Services
 
         public async Task<BaseResult<ReportDto>> CreateReportAsync(CreateReportDto dto)
         {
-            try
-            {
+            
                 User? user = await _userRepository.GetAll().FirstOrDefaultAsync(x => x.Id == dto.UserId);
                 Report? report = await _reportRepository.GetAll().FirstOrDefaultAsync(x => x.Name == dto.Name);
                 BaseResult? result = _reportValidator.CreateValidator(report, user);
@@ -66,23 +65,12 @@ namespace FonTech.Application.Services
                 {
                     Data = _mapper.Map<ReportDto>(report)
                 };
-            }
-
-            catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
-                return new BaseResult<ReportDto>()
-                {
-                    ErrorMessage = ErrorMessage.InternalServerError,
-                    ErrorCode = (int)ErrorCodes.InternalServerError,
-                };
-            }
+            
         }
 
         public async Task<BaseResult<ReportDto>> DeleteReportAsync(long id)
         {
-            try
-            {
+            
                 //await _reportRepository.CreateAsync(new Report()
                 //{
 
@@ -107,24 +95,15 @@ namespace FonTech.Application.Services
                     };
                 }
 
-                await _reportRepository.RemoveAsync(report);
+                 _reportRepository.Remove(report);
+
+                await _reportRepository.SaveChangesAsync();
 
                 return new BaseResult<ReportDto>()
                 {
                     Data = _mapper.Map<ReportDto>(report)
                 };
 
-            }
-
-            catch (Exception ex)
-            {
-                _logger.Error(ex, ex.Message);
-                return new BaseResult<ReportDto>()
-                {
-                    ErrorMessage = ErrorMessage.InternalServerError,
-                    ErrorCode = (int)ErrorCodes.InternalServerError,
-                };
-            }
         }
 
         public BaseResult<ReportDto> GetReportByIdAsync(long id)
@@ -224,14 +203,22 @@ namespace FonTech.Application.Services
                     };
                 }
 
-                report.Name = dto.Name;
-                report.Description = dto.Description;
+              var  reportNew = new Report()
+                {
+                   Name = dto.Name,
+                   Description = dto.Description,
+                };
 
-                await _reportRepository.UpdateAsync(report);
+              //  report.Name = dto.Name;
+              //  report.Description = dto.Description;
+
+               var updatedReport = _reportRepository.Update(reportNew);
+
+               await _reportRepository.SaveChangesAsync();   
 
                 return new BaseResult<ReportDto>()
                 {
-                    Data = _mapper.Map<ReportDto>(report)
+                    Data = _mapper.Map<ReportDto>(updatedReport)
                 };
             }
 
