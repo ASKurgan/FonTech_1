@@ -35,7 +35,7 @@ namespace FonTech.DAL.Repositories
             return _dbContext.Set<TEntity>();
         }
 
-        public  void Remove(TEntity entity)
+        public void Remove(TEntity entity)
         {
             if (entity == null)
             {

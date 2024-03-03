@@ -1,6 +1,7 @@
 ﻿using FonTech.Application.Services;
 using FonTech.Domain.Dto.Report;
 using FonTech.Domain.Dto.Role;
+using FonTech.Domain.Dto.UserRole;
 using FonTech.Domain.Entity;
 using FonTech.Domain.Interfaces.Services;
 using FonTech.Domain.Result;
@@ -12,7 +13,7 @@ namespace FonTech.Api.Controllers
 {
     [Consumes(MediaTypeNames.Application.Json)]
     [ApiController]
-   // [Authorize(Roles ="Admin")]
+    [Authorize(Roles ="Admin")]
     [Route("api/[controller]")]
     public class RoleController : ControllerBase
     {
@@ -145,12 +146,50 @@ namespace FonTech.Api.Controllers
         /// </remarks>
         /// <response code = "200"> Если роль была добавлена</response>>
         /// <response code = "400"> Если роль не была добавлена </response>>
-        [HttpPost("addRole")]
+        [HttpPost("add-role")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<BaseResult<RoleDto>>> AddRoleForUser([FromBody] UserRoleDto dto)
         {
             var response = await _roleService.AddRoleForUserAsync(dto);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        /// <summary>
+        /// Удаление роли у пользователя
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpDelete("delete-role")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResult<RoleDto>>> DeleteRoleForUser([FromBody] DeleteUserRoleDto dto)
+        {
+            var response = await _roleService.DeleteRoleForUserAsync(dto);
+
+            if (response.IsSuccess)
+            {
+                return Ok(response);
+            }
+            return BadRequest(response);
+        }
+
+        /// <summary>
+        /// Обновление роли у пользователя
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        [HttpPut("update-role")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<BaseResult<RoleDto>>> UpdateRoleForUser([FromBody] UpdateUserRoleDto dto)
+        {
+            var response = await _roleService.UpdateRoleForUserAsync(dto);
 
             if (response.IsSuccess)
             {
