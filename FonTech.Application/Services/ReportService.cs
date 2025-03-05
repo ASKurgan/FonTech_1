@@ -7,8 +7,11 @@ using FonTech.Domain.Interfaces.Repositories;
 using FonTech.Domain.Interfaces.Services;
 using FonTech.Domain.Interfaces.Validations;
 using FonTech.Domain.Result;
+using FonTech.Domain.Settings;
+using FonTech.Producer.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -23,16 +26,21 @@ namespace FonTech.Application.Services
         private readonly IBaseRepository<Report> _reportRepository;
         private readonly IBaseRepository<User> _userRepository;
         private readonly IReportValidator _reportValidator;
+        private readonly IMessageProducer _messageProducer;
+        private readonly IOptions<RabbitMqSettings> _rabbitMqOptions;
         private readonly IMapper _mapper;
         private readonly Serilog.ILogger _logger;
         public ReportService(IBaseRepository<Report> reportRepository, IBaseRepository<User> userRepository,
-            IReportValidator reportValidator, IMapper mapper, Serilog.ILogger logger)
+            IReportValidator reportValidator, IMapper mapper, Serilog.ILogger logger,
+            IMessageProducer messageProducer, IOptions<RabbitMqSettings> rabbitMqOptions)
         {
             _reportRepository = reportRepository;
             _logger = logger;
             _reportValidator = reportValidator;
             _mapper = mapper;
             _userRepository = userRepository;
+            _messageProducer = messageProducer;
+            _rabbitMqOptions = rabbitMqOptions;
         }
 
         /// <inheritdoc /> </inheritdoc>
@@ -61,6 +69,10 @@ namespace FonTech.Application.Services
                 };
 
                 await _reportRepository.CreateAsync(report);
+                await _reportRepository.SaveChangesAsync();
+
+               _messageProducer.SendMessage(report,_rabbitMqOptions.Value.RoutingKey, _rabbitMqOptions.Value.ExchangeName);
+                
                 return new BaseResult<ReportDto>()
                 {
                     Data = _mapper.Map<ReportDto>(report)

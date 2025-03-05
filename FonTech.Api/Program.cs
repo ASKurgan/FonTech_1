@@ -1,5 +1,7 @@
 using FonTech.DAL.DependencyInjection;
 using FonTech.Application.DependencyInjection;
+using FonTech.Consumer.DependencyInjection;
+using FonTech.Producer.DependencyInjection;
 using Serilog;
 using FonTech.DAL;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using FonTech.Api.Middlewares;
 var builder = WebApplication.CreateBuilder(args);
 
+
+builder.Services.Configure<RabbitMqSettings>(builder.Configuration.GetSection(nameof(RabbitMqSettings)));
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection(JwtSettings.DefaultSection));
 
 // builder.Services.AddSingleton(new ServiceCollection());
@@ -26,8 +30,12 @@ builder.Services.AddSwagger();
 
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
+
 builder.Services.AddDataAccessLayer(builder.Configuration);
 builder.Services.AddApplication();
+builder.Services.AddProducer();
+builder.Services.AddConsumer();
+
 var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
